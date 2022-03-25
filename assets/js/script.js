@@ -19,31 +19,63 @@ var searchHistory = [];
 
 // To Do: Display UV index with a highlight color to indicate whether the conditions are favorable, moderate, or severe
 
-var updateLocalStorage = function() {
-    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
-};
 
 // To Do: A city  in the search history is clicked display all weather details again.
-
-// To Do: Save searched city to an array, if the city is not all ready record.  Limit history to 10 cities. Push in new city and pop out the oldest search
-var saveCity = function () {
-
-    if(searchHistory){
-        for(var i =0; i < cityObj.length; i++){
-            if(cityObj.name === searchHistory[i].name)
-                return;
-        }
-    }
-
-    searchHistory.push(cityObj);
-    updateLocalStorage();
-};
 
 //Remove the Dom element with the matching selector
 var removeElement = function (selector) {
     $(selector).each(function(i, object){
         this.remove();
     })
+};
+
+// Save to local storage
+var updateLocalStorage = function() {
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+};
+
+var addDomHistory = function (name) {
+    var newCityEL = $("<button>")
+    .addClass("searched col-6 col-md-12")
+    .text(name)
+    .attr("type", "button")
+    .attr("id", name);
+    $(newCityEL).appendTo($(".history"));
+};
+
+// Review previous history from local storage
+var loadHistory = function () {
+    //Gets scores from localStorage.
+    searchHistory = localStorage.getItem("searchHistory");
+  
+    if (searchHistory === null) {
+        searchHistory = [];
+    } else {  
+        //Converts searchHistory from the string format back into an array of objects.
+        searchHistory = JSON.parse(searchHistory);
+
+        for(var i = 0; i < searchHistory.length; i++)
+        {
+            addDomHistory(searchHistory[i].name);
+        }
+    }
+};
+
+
+// Save searched city to an array, if the city is not all ready record.  
+// To Do:  Limit history to 10 cities. Push in new city and pop out the oldest search
+var saveCity = function () {
+
+    if(searchHistory){
+        for(var i =0; i < searchHistory.length; i++){
+            if(cityObj.name === searchHistory[i].name)
+                return;
+        }
+    }
+
+    searchHistory.push(cityObj);
+    addDomHistory(cityObj.name);
+    updateLocalStorage();
 };
 
 // Display current weather
@@ -165,6 +197,7 @@ var getCityCoordinates = function (event) {
     location = location.split(",");
     var cityName = location[0].trim();
     var state = location[1].trim();
+    console.log("city: ", cityName);
 
     cityObj.name = cityName;
 
@@ -179,6 +212,8 @@ var getCityCoordinates = function (event) {
               // assign coordinates
               cityObj.lat = data[0].lat;
               cityObj.lon = data[0].lon;
+              console.log(cityObj.lat, cityObj.lon);    
+              getWeather();
           });
         }else {
             // TO DO write message to City current container, not an alert
@@ -191,12 +226,25 @@ var getCityCoordinates = function (event) {
         alert("Unable to retrieve location");
         return;
       });
-    
-    getWeather();
 };
 
 
+loadHistory ();
 // Run with default city details
 getWeather();
+
+$(".history").on("click", "button", function() {
+    //search for city id
+    var name = this.getAttribute("id");
+    console.log(name);
+
+    for(var i =0; i < searchHistory.length; i++){
+        if(name === searchHistory[i].name)
+        cityObj = searchHistory[i];
+        console.log("history city: ", cityObj.name);
+    }
+    removeElement("li");
+    getWeather();
+});
 
 cityFormEl.addEventListener("submit", getCityCoordinates);
