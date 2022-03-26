@@ -5,14 +5,20 @@ body {
   h1,
   h2,
   h3,
-  h4,
-  h5,
-  h6 {
+  h4 {
     font-family: "Staatliches", sans-serif;
   }
   
-  ul.list-group {
-    min-height: 130px;
+  img {
+    height: 50px;
+    width: 50px;
   }
     
- 
+  ul {
+    list-style-type: none;
+    padding-left: 10px;
+  }
+
+  li {
+    padding: 5px 0;
+  }

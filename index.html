@@ -36,11 +36,11 @@
           <div class="col-12">
             <form id="cityForm">
               <label for="citySearch"><h2>Search for a City</h2></label></br>
-              <input type="text" id="citySearch" name="citySearch" value="Charleston, SC" /></br>
+              <input class="mb-2" type="text" id="citySearch" name="citySearch" value="Charleston, SC" /></br>
               <button type="submit">Search</button>
             </form>
           </div>
-          <div class="col-12 history">
+          <div class="col-12 history mt-5">
             <!-- Search History, not presets
             <button id="cityname" class="searched col-6 col-md-12">City Name</button>
             <button id="cityname" class="searched col-6 col-md-12">City Name</button>
@@ -56,8 +56,10 @@
       
         <div id="focast" class="col-12 col-md-9">
           <div class="col-12">
-            <h2 id="currentCity">City Name</h2>
-            <img class="currentWeather">
+            <div class="col d-flex flex-row">
+              <h2 class="pt-2" id="currentCity">City Name</h2>
+              <img class="currentWeather">
+            </div>
             <ul id="currentWeather">
               <!--
                 <li>Temp: °F</li>

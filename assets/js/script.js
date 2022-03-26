@@ -36,7 +36,7 @@ var updateLocalStorage = function() {
 
 var addDomHistory = function (name) {
     var newCityEL = $("<button>")
-    .addClass("searched col-6 col-md-12")
+    .addClass("searched col-6 col-md-12 mb-3")
     .text(name)
     .attr("type", "button")
     .attr("id", name);
@@ -80,12 +80,12 @@ var saveCity = function () {
 
 // Display current weather
 var currentDisplay = function () {
-    currentCityEL.textContent = cityObj.name;
+    var date = moment(weather.current.dt, "X").format("l");
+    currentCityEL.textContent = cityObj.name + " " + date;
     var classes = "currentWeather";
 
     var selector = "img.currentWeather";
     var icon = weather.current.weather[0].icon;
-    console.log("curent: ", icon);
     var icon = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
     //http://openweathermap.org/img/wn/10d@2x.png
     $(selector).attr("src", icon);
@@ -112,7 +112,7 @@ var dailyDisplay = function () {
         var day = i + 1;
         var selector = "h4[data-day=" + day + "]";
         
-        var date = moment(weather.daily[i].dt, "X").format("L");
+        var date = moment(weather.daily[i].dt, "X").format("l");
         $(selector).text(date);   
         
         selector = "img[data-day=" + day + "]";
@@ -127,8 +127,7 @@ var dailyDisplay = function () {
         var text = [
             "Temp:  " + weather.daily[i].temp.day + "°F",
             "Wind:  " + weather.daily[i].wind_speed + " MPH",
-            "Humidity:  " + weather.daily[i].humidity + "%",
-            "UV Index:  " + weather.daily[i].uvi
+            "Humidity:  " + weather.daily[i].humidity + "%"
         ];
 
         for (var k = 0; k < text.length; k++){
@@ -197,7 +196,6 @@ var getCityCoordinates = function (event) {
     location = location.split(",");
     var cityName = location[0].trim();
     var state = location[1].trim();
-    console.log("city: ", cityName);
 
     cityObj.name = cityName;
 
@@ -211,8 +209,7 @@ var getCityCoordinates = function (event) {
           response.json().then(function(data) {
               // assign coordinates
               cityObj.lat = data[0].lat;
-              cityObj.lon = data[0].lon;
-              console.log(cityObj.lat, cityObj.lon);    
+              cityObj.lon = data[0].lon;    
               getWeather();
           });
         }else {
@@ -238,10 +235,12 @@ $(".history").on("click", "button", function() {
     var name = this.getAttribute("id");
     console.log(name);
 
+    // Get saved coordinates to use for weather collection
     for(var i =0; i < searchHistory.length; i++){
-        if(name === searchHistory[i].name)
-        cityObj = searchHistory[i];
-        console.log("history city: ", cityObj.name);
+        if(name === searchHistory[i].name){
+            cityObj = searchHistory[i];
+            console.log("history city: ", cityObj.name);
+        }
     }
     removeElement("li");
     getWeather();
