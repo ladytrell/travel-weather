@@ -1,5 +1,5 @@
-# Work Day Scheduler Starter Code
-Interactive workday calendar.  Allows add and removing tasks for each hour of the workday.  Color codes the task description content holders with respect to the current hour of the day as grey for past, red for present or green future.
+# Travel Weather
+Interactive weather app for United States cities.  Display current weather conditions with color alerts for the UV index severity.  A 5 day forcast is provided along with search history that reloads when returning to the page.
 
 ## Repository
 [GitHub](https://github.com/ladytrell/travel-weather/)

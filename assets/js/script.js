@@ -20,8 +20,25 @@ var weather = {
 
 var searchHistory = [];
 
-// To Do Create and display alert Dom element for errors
+// Remove dom element from view and the consumed space
+var hideContent = function (element) {
 
+    $(element).removeClass( "visible" ).addClass( "invisible" );
+};
+
+var showContent = function (element) {
+
+    $(element).removeClass( "invisible" ).addClass( "visible" );
+};
+
+// Display alert Dom element for errors
+var displayAlert = function (message) {
+    var alertEL = $("#warning");
+
+    $(alertEL)
+    .text(message);
+    showContent(alertEL);
+};
 
 //Remove the Dom element with the matching selector
 var removeElement = function (selector) {
@@ -61,7 +78,6 @@ var loadHistory = function () {
         }
     }
 };
-
 
 // Save searched city to an array, if the city is not all ready record.  
 // To Do:  Limit history to 10 cities. Push in new city and pop out the oldest search
@@ -118,7 +134,6 @@ var currentDisplay = function () {
         "Wind:  " + weather.current.wind_speed + " MPH",
         "Humidity:  " + weather.current.humidity + "%",
         "UV Index:  "
-        //"UV Index:  " + weather.current.uvi
     ];
 
     for (var i = 0; i < 4; i++){
@@ -166,7 +181,8 @@ var dailyDisplay = function () {
     });
 }
 
-var displayWeather = function () {    
+var displayWeather = function () {     
+    hideContent($("#warning"));   
     currentDisplay();
     dailyDisplay();
 };
@@ -177,33 +193,28 @@ var displayWeather = function () {
 // https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&unts={measurement}&appid={API key}
 
 var getWeather = function () {
-    // https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&units=imperial&appid={API key}
     var uri = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + cityObj.lat + '&lon=' + cityObj.lon + '&exclude=minutely,hourly,alerts&units=imperial&appid=' + appKey;
 
     fetch(uri).then(function(response) {
         if (response.ok) {
           response.json().then(function(data) {
               // assign current and daily forecasts
-              console.log(data);
               weather.current = data.current;
               weather.current.temp = data.current.temp;
               weather.daily = data.daily;
               saveCity();
               displayWeather();
           });
-        } else {
-            // TO DO write message to City current container, not an alert
-            alert('Error: Unable to retrieve forecast');
+        } else {            
+            displayAlert("Error: Unable to retrieve forecast");
             return;
         }
       })
       .catch(function(error) {
-        // TO DO write message to City current container, not an alert
-        alert("Unable to retrieve forecast");
+        displayAlert("Unable to retrieve forecast");
             return;
       });
-}
-
+};
 
 // Collect User defined City from form, convert city to coordinates
 var getCityCoordinates = function (event) {
@@ -214,8 +225,7 @@ var getCityCoordinates = function (event) {
     var location = document.querySelector("input[name='citySearch']").value;
     // check if input values are empty strings
     if (!location) {
-        //To Do:  add element "Enter City, State"
-       // alert("Enter City");
+        displayAlert("Enter City and state");
         return;
     }
 
@@ -240,14 +250,12 @@ var getCityCoordinates = function (event) {
               getWeather();
           });
         }else {
-            // TO DO write message to City current container, not an alert
-            alert('Error: Cannot find City');
+            displayAlert("Error: Cannot find City");
             return;
         }
       })
       .catch(function(error) {
-        // TO DO write message to City current container, not an alert
-        alert("Unable to retrieve location");
+        displayAlert("Unable to retrieve location");
         return;
       });
 };
@@ -262,13 +270,11 @@ getWeather();
 $(".history").on("click", "button", function() {
     //search for city id
     var name = this.getAttribute("id");
-    console.log(name);
 
     // Get saved coordinates to use for weather collection
     for(var i =0; i < searchHistory.length; i++){
         if(name === searchHistory[i].name){
             cityObj = searchHistory[i];
-            console.log("history city: ", cityObj.name);
         }
     }
     removeElement("li");
