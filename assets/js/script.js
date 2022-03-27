@@ -238,7 +238,7 @@ var getCityCoordinates = function (event) {
     // Get City Coordinates
     //http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
     //var uri = "http://api.openweathermap.org/geo/1.0/direct?q=" + "Durham,NC" + ",USA&limit=1&appid=" + appKey;
-    var uri = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "," + state + ",USA&limit=1&appid=" + appKey;
+    var uri = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "," + state + ",USA&limit=1&appid=" + appKey;
     
     fetch(uri).then(function(response) {
         if (response.ok) {
