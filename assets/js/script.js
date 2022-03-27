@@ -5,6 +5,9 @@ var cityFormEl = document.querySelector("#cityForm");
 var cityInputEl = document.querySelector("#citySearch");
 
 var appKey = '9069b962c7379862016fc6470e9f423e';
+
+var defaultCity = true;
+
 var cityObj = {
     'name': "Charleston",
     'lat': 32.7766,
@@ -17,10 +20,8 @@ var weather = {
 
 var searchHistory = [];
 
-// To Do: Display UV index with a highlight color to indicate whether the conditions are favorable, moderate, or severe
+// To Do Create and display alert Dom element for errors
 
-
-// To Do: A city  in the search history is clicked display all weather details again.
 
 //Remove the Dom element with the matching selector
 var removeElement = function (selector) {
@@ -36,7 +37,7 @@ var updateLocalStorage = function() {
 
 var addDomHistory = function (name) {
     var newCityEL = $("<button>")
-    .addClass("searched col-6 col-md-12 mb-3")
+    .addClass("searched col mb-3")
     .text(name)
     .attr("type", "button")
     .attr("id", name);
@@ -66,6 +67,9 @@ var loadHistory = function () {
 // To Do:  Limit history to 10 cities. Push in new city and pop out the oldest search
 var saveCity = function () {
 
+    if(defaultCity){
+        return;
+    }
     if(searchHistory){
         for(var i =0; i < searchHistory.length; i++){
             if(cityObj.name === searchHistory[i].name)
@@ -77,6 +81,25 @@ var saveCity = function () {
     addDomHistory(cityObj.name);
     updateLocalStorage();
 };
+
+// Display UV index with a highlight color to indicate whether the conditions are favorable, moderate, or severe
+var uviSeverityCheck = function (parentEL) {
+    var uvi = weather.current.uvi;
+    var severity
+    if (uvi <= 2){
+        severity= "green";
+    } else if ( uvi <= 5){
+        severity= "yellow";
+    } else if ( uvi <= 7){
+        severity= "orange";
+    } else {
+        severity= "red";
+    }
+    var uviEL = $("<span>")
+    .addClass(severity)
+    .text(uvi);
+    $(uviEL).appendTo($(parentEL));
+}
 
 // Display current weather
 var currentDisplay = function () {
@@ -94,13 +117,17 @@ var currentDisplay = function () {
         "Temp:  " + weather.current.temp + "°F",
         "Wind:  " + weather.current.wind_speed + " MPH",
         "Humidity:  " + weather.current.humidity + "%",
-        "UV Index:  " + weather.current.uvi
+        "UV Index:  "
+        //"UV Index:  " + weather.current.uvi
     ];
 
     for (var i = 0; i < 4; i++){
         var tempEl = document.createElement("li");
         tempEl.classList = classes;
         tempEl.textContent = text[i];
+        if(text[i].trim() === "UV Index:") {            
+            uviSeverityCheck(tempEl); 
+        }
         currentWeatherEL.appendChild(tempEl);
     }    
 };
@@ -178,8 +205,7 @@ var getWeather = function () {
 }
 
 
-// To Do:  Collect User defined City from form
-// convert city to coordinates
+// Collect User defined City from form, convert city to coordinates
 var getCityCoordinates = function (event) {
     event.preventDefault();
 
@@ -210,6 +236,7 @@ var getCityCoordinates = function (event) {
               // assign coordinates
               cityObj.lat = data[0].lat;
               cityObj.lon = data[0].lon;    
+              defaultCity = false;
               getWeather();
           });
         }else {
@@ -227,9 +254,11 @@ var getCityCoordinates = function (event) {
 
 
 loadHistory ();
+
 // Run with default city details
 getWeather();
 
+// A city  in the search history is clicked display all weather details again.
 $(".history").on("click", "button", function() {
     //search for city id
     var name = this.getAttribute("id");
