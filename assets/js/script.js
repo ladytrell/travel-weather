@@ -125,8 +125,8 @@ var currentDisplay = function () {
 
     var selector = "img.currentWeather";
     var icon = weather.current.weather[0].icon;
-    var icon = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
-    //http://openweathermap.org/img/wn/10d@2x.png
+    var icon = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
+    //https://openweathermap.org/img/wn/10d@2x.png
     $(selector).attr("src", icon);
 
     var text = [
@@ -159,8 +159,7 @@ var dailyDisplay = function () {
         
         selector = "img[data-day=" + day + "]";
         var icon = weather.daily[i].weather[0].icon;
-        var iconLink = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
-        //http://openweathermap.org/img/wn/10d@2x.png
+        var iconLink = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
         $(selector).attr("src", iconLink);
 
         selector = "ul[data-day=" + day + "]";
@@ -236,8 +235,7 @@ var getCityCoordinates = function (event) {
     cityObj.name = cityName;
 
     // Get City Coordinates
-    //http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
-    //var uri = "http://api.openweathermap.org/geo/1.0/direct?q=" + "Durham,NC" + ",USA&limit=1&appid=" + appKey;
+    //https://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}
     var uri = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "," + state + ",USA&limit=1&appid=" + appKey;
     
     fetch(uri).then(function(response) {
